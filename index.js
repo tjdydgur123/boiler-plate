@@ -2,6 +2,7 @@ const express = require("express");
 const app = express();
 const port = 4000;
 const { User } = require("./models/User");
+const config = require("./config/key");
 
 //application.x-www-form-urlencoded
 app.use(express.json());
@@ -11,9 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 // connect our express web to MongoDB
 const mongoose = require("mongoose");
 mongoose
-  .connect(
-    "mongodb+srv://yonghyuk:ehshd7671@boiler-plate.yuszl.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"
-  )
+  .connect(config.mongoURI)
   .then(() => console.log("MongoDB Connected..."))
   .catch((err) => console.log(err));
 
