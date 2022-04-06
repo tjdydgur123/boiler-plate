@@ -2,12 +2,13 @@ const express = require("express");
 const app = express();
 const port = 4000;
 const { User } = require("./models/User");
+const { auth } = require("./middleware/auth");
 const config = require("./config/key");
 const cookieParser = require("cookie-parser");
 
-// application.x-www-form-urlencoded
+// It parses incoming JSON requests and puts the parsed data in req.body
 app.use(express.json());
-// will convert the user's input into the JSON format
+// It recognize the incoming Request Object as strings or arrays
 app.use(express.urlencoded({ extended: true }));
 // use cookieParser method
 app.use(cookieParser());
@@ -19,8 +20,10 @@ mongoose
   .then(() => console.log("MongoDB Connected..."))
   .catch((err) => console.log(err));
 
-app.post("/register", (req, res) => {
+app.post("/api/users/register", (req, res) => {
   const user = new User(req.body);
+
+  // hash the modified or new password before saving into database -> User.js
 
   user.save((err, userInfo) => {
     if (err) return res.json({ success: false, error });
@@ -28,7 +31,7 @@ app.post("/register", (req, res) => {
   });
 });
 
-app.post("/login", (req, res) => {
+app.post("/api/users/login", (req, res) => {
   // find requested email in the database
   User.findOne({ email: req.body.email }, (err, user) => {
     if (!user)
@@ -56,6 +59,21 @@ app.post("/login", (req, res) => {
           .json({ loginSuccess: true, userId: user._id });
       });
     });
+  });
+});
+
+app.get("/api/users/auth", auth, (req, res) => {
+  // if pass the 'auth' middleware function, then Authentication is true!
+  // sending below data will be helpful from the client side
+  res.status(200).json({
+    _id: req.user._id,
+    isAdmin: req.user.role === 0 ? false : true,
+    isAuth: true,
+    email: req.user.email,
+    name: req.user.name,
+    lastname: req.user.lastname,
+    role: req.user.role,
+    image: req.user.image,
   });
 });
 
