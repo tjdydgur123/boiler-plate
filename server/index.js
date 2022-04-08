@@ -1,6 +1,5 @@
 const express = require("express");
 const app = express();
-const port = 4000;
 const { User } = require("./models/User");
 const { auth } = require("./middleware/auth");
 const config = require("./config/key");
@@ -19,6 +18,14 @@ mongoose
   .connect(config.mongoURI)
   .then(() => console.log("MongoDB Connected..."))
   .catch((err) => console.log(err));
+
+app.get("/", (req, res) => {
+  res.send("Hello World!");
+});
+
+app.get("/api/hello", (req, res) => {
+  res.send("Hello!!!");
+});
 
 app.post("/api/users/register", (req, res) => {
   const user = new User(req.body);
@@ -84,10 +91,7 @@ app.get("/api/users/logout", auth, (req, res) => {
   });
 });
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
-
+const port = 4000;
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}!`);
 });
