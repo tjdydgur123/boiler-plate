@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { auth } from "../_actions/user_action";
 import { useNavigate } from "react-router-dom";
 
+// eslint-disable-next-line
 export default function (SpecificComponent, option, adminRoute = null) {
   // null -> 아무나 출입이 가능한 페이지
   // true -> 로그인한 유저만 출입이 가능한 페이지
